@@ -5,7 +5,7 @@ namespace visionguard
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -86,6 +86,16 @@ namespace visionguard
             // });
 
             var app = builder.Build();
+
+            // ============================================================
+            // DATABASE SEEDING
+            // ============================================================
+            // Seed default admin users on startup
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<VisionGuardDbContext>();
+                await DbSeeder.SeedAsync(context);
+            }
 
             // ============================================================
             // HTTP REQUEST PIPELINE
